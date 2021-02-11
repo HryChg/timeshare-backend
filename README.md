@@ -15,3 +15,6 @@ https://www.digitalocean.com/community/tutorials/linting-and-formatting-with-esl
 
 # CRUD API Design
 https://restfulapi.net/resource-naming/
+
+# Intelli J Shortcut
+`shift + control + L` for Fixing 

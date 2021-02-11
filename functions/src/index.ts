@@ -1,17 +1,16 @@
-const functions = require("firebase-functions");
-const express = require("express");
-const admin = require("firebase-admin");
+import express = require("express"); // reason for using require https://stackoverflow.com/a/34522813
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
 
-
-admin.initializeApp(functions.config().firebase);
-
+admin.initializeApp();
 const app = express();
-app.get("/", (req, res) => {
-  res.status(200).send({data: "worldy hellos"});
+app.get("/", (req: any, res: any) => {
+  res.status(200).send({data: "worldly hellos"});
 });
 
 app.post("/timers", async (req, res) => {
   try {
+    // @ts-ignore
     const startTimeMillis = parseInt(req.query.startTime);
     const startTime = admin.firestore.Timestamp.fromMillis(startTimeMillis);
     const writeResult = await admin.firestore()
@@ -24,4 +23,6 @@ app.post("/timers", async (req, res) => {
   }
 });
 
-exports.app = functions.https.onRequest(app);
+
+exports.apps = functions.https.onRequest(app);
+
