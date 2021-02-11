@@ -1,7 +1,10 @@
 # TimeShare Backend Server
 This is the backend server for the Timeshare project https://github.com/HryChg/TimeShare
 
-# To run functiosn locally
+# App Architecture set up via
+https://medium.com/@savinihemachandra/creating-rest-api-using-express-on-cloud-functions-for-firebase-53f33f22979c
+
+# To run functions locally
 `firebase emulators:start`
 
 # To deploy the express app to firebase
