@@ -10,17 +10,18 @@ app.get("/", (req, res) => {
   res.status(200).send({data: "worldy hellos"});
 });
 
-app.post("/addMessage", async (req, res) => {
+app.post("/timers", async (req, res) => {
   try {
-    const original = req.query.text;
-    const writeResult = await admin.firestore().collection("messages")
-        .add({original: original});
-    res.json({result: `Message with ID: ${writeResult.id} added.`});
+    const startTimeMillis = parseInt(req.query.startTime);
+    const startTime = admin.firestore.Timestamp.fromMillis(startTimeMillis);
+    const writeResult = await admin.firestore()
+        .collection("timers")
+        .add({"startTime": startTime});
+    res.json({result: `Timer with ID: ${writeResult.id} added.`});
   } catch (err) {
     console.log(err);
     res.status(500).send({errMsg: err});
   }
 });
-
 
 exports.app = functions.https.onRequest(app);

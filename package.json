@@ -4,6 +4,7 @@
   "description": "Backend Support for Timeshare app",
   "main": "index.js",
   "scripts": {
+    "start": "firebase emulators:start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
