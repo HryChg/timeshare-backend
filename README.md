@@ -18,3 +18,6 @@ https://restfulapi.net/resource-naming/
 
 # Intelli J Shortcut
 `shift + control + L` for Fixing 
+
+# Convert Plain Object to Typescript Classes
+https://github.com/typestack/class-transformer

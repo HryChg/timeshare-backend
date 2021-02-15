@@ -1,21 +1,13 @@
+/* eslint-disable new-cap */
+import {Expose} from "class-transformer";
+
 /**
- * Room Model that parses JSON into Rooms
+ * Room Model
  */
 export class RoomModel {
-  private readonly internalJson: any
-
-  /**
-   * Constructor for RoomModel
-   * @param{obj} timerJson
-   */
-  constructor(timerJson: any) {
-    this.internalJson = timerJson;
-  }
-
-  /**
-   * @return{obj} return as json object
-   */
-  public toJSON(): any {
-    return this.internalJson;
-  }
+  @Expose() title!: string;
+  @Expose() workTimer!: number;
+  @Expose() breakTimer!: number;
+  @Expose() onBreak!: boolean;
+  @Expose() timeLeft!: number;
 }
