@@ -54,5 +54,16 @@ app.get("/rooms", async (req, res) => {
   }
 });
 
+app.delete("/rooms", async (req, res) => {
+  try {
+    const roomID: string = req.query.roomID as string;
+    await db.collection("rooms").doc(roomID).delete();
+    res.status(200).send();
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({errMsg: err.message});
+  }
+});
+
 exports.app = functions.https.onRequest(app);
 
