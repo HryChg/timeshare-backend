@@ -1,6 +1,7 @@
 import express = require("express"); // reason for using require https://stackoverflow.com/a/34522813
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
+import {RoomModel} from "./Models/RoomModel";
 
 admin.initializeApp();
 const app = express();
@@ -17,6 +18,18 @@ app.post("/timers", async (req, res) => {
         .collection("timers")
         .add({"startTime": startTime});
     res.json({result: `Timer with ID: ${writeResult.id} added.`});
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({errMsg: err});
+  }
+});
+
+app.post("/rooms", async (req, res) => {
+  try {
+    const room = new RoomModel(req.query);
+    const writeResult = await admin.firestore()
+        .collection("rooms").add(room.toJSON());
+    res.json({result: `Room with ID: ${writeResult.id} added.`});
   } catch (err) {
     console.log(err);
     res.status(500).send({errMsg: err});
