@@ -65,5 +65,18 @@ app.delete("/rooms", async (req, res) => {
   }
 });
 
+app.put("/rooms", async (req, res) => {
+  try {
+    const roomID: string = req.body.roomID as string;
+    const room = plainToClass(RoomModel, req.body.room,
+        {excludeExtraneousValues: true});
+    await db.collection("rooms").doc(roomID).set(classToPlain(room));
+    res.status(200).send();
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({errMsg: err.message});
+  }
+});
+
 exports.app = functions.https.onRequest(app);
 
