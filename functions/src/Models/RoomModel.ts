@@ -10,4 +10,5 @@ export class RoomModel {
   @Expose() breakTimer!: number;
   @Expose() onBreak!: boolean;
   @Expose() timeLeft!: number;
+  // TODO Add UserIDs: [string]
 }
