@@ -21,3 +21,6 @@ https://restfulapi.net/resource-naming/
 
 # Convert Plain Object to Typescript Classes
 https://github.com/typestack/class-transformer
+
+# Why unable to get a list of all users
+https://stackoverflow.com/questions/14673708/how-do-i-return-a-list-of-users-if-i-use-the-firebase-simple-username-password
