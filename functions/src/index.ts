@@ -8,24 +8,26 @@ import {RoomModel} from "./Models/RoomModel";
 
 admin.initializeApp();
 const app = express();
+const db = admin.firestore();
+
+
 app.get("/", (req: any, res: any) => {
   res.status(200).send({data: "worldly hellos"});
 });
 
-// app.post("/timers", async (req, res) => {
-//   try {
-//     // @ts-ignore
-//     const startTimeMillis = parseInt(req.query.startTime);
-//     const startTime = admin.firestore.Timestamp.fromMillis(startTimeMillis);
-//     const writeResult = await admin.firestore()
-//         .collection("timers")
-//         .add({"startTime": startTime});
-//     res.json({result: `Timer with ID: ${writeResult.id} added.`});
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).send({errMsg: err});
-//   }
-// });
+app.post("/timers", async (req, res) => {
+  try {
+    const startTimeMillis = parseInt(req.query.startTime as string);
+    const startTime = admin.firestore.Timestamp.fromMillis(startTimeMillis);
+    const writeResult = await admin.firestore()
+        .collection("timers")
+        .add({"startTime": startTime});
+    res.json({result: `Timer with ID: ${writeResult.id} added.`});
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({errMsg: err});
+  }
+});
 
 app.post("/rooms", async (req, res) => {
   try {
@@ -40,5 +42,17 @@ app.post("/rooms", async (req, res) => {
   }
 });
 
-exports.apps = functions.https.onRequest(app);
+app.get("/rooms", async (req, res) => {
+  try {
+    const roomID: string = req.query.roomID as string;
+    const roomsRef = db.collection("rooms").doc(roomID);
+    const room = await roomsRef.get();
+    res.json({result: room.data()});
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({errMsg: err.message});
+  }
+});
+
+exports.app = functions.https.onRequest(app);
 
