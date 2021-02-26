@@ -9,7 +9,7 @@ module.exports = {
     "plugin:import/errors",
     "plugin:import/warnings",
     "plugin:import/typescript",
-    "google",
+    // "google", // Disabled as it restricts char max length to be 97
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
