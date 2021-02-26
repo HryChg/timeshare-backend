@@ -104,5 +104,41 @@ app.post("/users", async (req, res) => {
   }
 });
 
+app.put("/users", async (req, res) => {
+  try {
+    const {userID, name, avatarURL, goal} = req.body;
+
+    let userQuerySnapShot = await db.collection("users")
+      .where("userID", "==", userID)
+      .get();
+    if (userQuerySnapShot.empty){
+      res.status(409).send("User ID not found.");
+      return;
+    }
+    if (userQuerySnapShot.size > 1) {
+      res.status(500).send("More than one User ID found. Operation Stopped");
+      return;
+    }
+
+    const userDoc = userQuerySnapShot.docs[0]
+    let user: UserModel = plainToClass(UserModel, userDoc.data(), {excludeExtraneousValues: true});
+    if (name) {
+      user.name = name;
+    }
+    if (avatarURL) {
+      user.avatarURL = avatarURL
+    }
+    if (goal) {
+      user.goal = goal
+    }
+
+    await db.collection("users").doc(userDoc.id).set(classToPlain(user));
+    res.json({result: `User with ID: ${userID} updated.`});
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({errMsg: err.message});
+  }
+});
+
 exports.app = functions.https.onRequest(app);
 
