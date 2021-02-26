@@ -19,8 +19,8 @@ app.post("/timers", async (req, res) => {
     const startTimeMillis = parseInt(req.query.startTime as string);
     const startTime = admin.firestore.Timestamp.fromMillis(startTimeMillis);
     const writeResult = await admin.firestore()
-        .collection("timers")
-        .add({"startTime": startTime});
+      .collection("timers")
+      .add({"startTime": startTime});
     res.json({result: `Timer with ID: ${writeResult.id} added.`});
   } catch (err) {
     console.log(err);
@@ -31,9 +31,9 @@ app.post("/timers", async (req, res) => {
 app.post("/rooms", async (req, res) => {
   try {
     const room = plainToClass(RoomModel, req.body,
-        {excludeExtraneousValues: true});
+      {excludeExtraneousValues: true});
     const writeResult = await admin.firestore()
-        .collection("rooms").add(classToPlain(room));
+      .collection("rooms").add(classToPlain(room));
     res.json({result: `Room with ID: ${writeResult.id} added.`});
   } catch (err) {
     console.log(err);
@@ -68,7 +68,7 @@ app.put("/rooms", async (req, res) => {
   try {
     const roomID: string = req.body.roomID as string;
     const room = plainToClass(RoomModel, req.body.room,
-        {excludeExtraneousValues: true});
+      {excludeExtraneousValues: true});
     await db.collection("rooms").doc(roomID).set(classToPlain(room));
     res.status(200).send();
   } catch (err) {
@@ -91,7 +91,7 @@ app.post("/users", async (req, res) => {
     let userIDQuerySnapShot = await db.collection("users")
       .where("userID", "==", userID)
       .get();
-    if (!userIDQuerySnapShot.empty){
+    if (!userIDQuerySnapShot.empty) {
       res.status(409).send("User ID already taken.");
       return;
     }
@@ -111,7 +111,7 @@ app.put("/users", async (req, res) => {
     let userQuerySnapShot = await db.collection("users")
       .where("userID", "==", userID)
       .get();
-    if (userQuerySnapShot.empty){
+    if (userQuerySnapShot.empty) {
       res.status(409).send("User ID not found.");
       return;
     }
@@ -134,6 +134,25 @@ app.put("/users", async (req, res) => {
 
     await db.collection("users").doc(userDoc.id).set(classToPlain(user));
     res.json({result: `User with ID: ${userID} updated.`});
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({errMsg: err.message});
+  }
+});
+
+app.get("/users", async (req, res) => {
+  try {
+    const userIDs: [string] = JSON.parse(req.query.userIDs as string);
+    if (userIDs.length < 1) {
+      res.status(200).send({result: []})
+      return;
+    }
+
+    const userQuerySnapShot = await db.collection("users")
+      .where("userID", "in", userIDs)
+      .get();
+    let matchedUsers = userQuerySnapShot.docs.map(doc => doc.data())
+    res.status(200).send({result: matchedUsers})
   } catch (err) {
     console.log(err);
     res.status(500).send({errMsg: err.message});
