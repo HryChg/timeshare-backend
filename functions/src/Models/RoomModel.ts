@@ -4,7 +4,7 @@ import {Expose} from "class-transformer";
 /**
  * Room Model
  */
-export class RoomModel {
+export default class RoomModel {
   @Expose() title!: string;
   @Expose() workTimer!: number;
   @Expose() breakTimer!: number;

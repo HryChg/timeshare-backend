@@ -3,13 +3,12 @@ import express = require("express"); // reason for using require https://stackov
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import {classToPlain, plainToClass} from "class-transformer";
-import {RoomModel} from "./Models/RoomModel";
-
+import RoomModel from "./Models/RoomModel";
+import UserModel from "./Models/UserModel";
 
 admin.initializeApp();
 const app = express();
 const db = admin.firestore();
-
 
 app.get("/", (req: any, res: any) => {
   res.status(200).send({data: "worldly hellos"});
@@ -72,6 +71,33 @@ app.put("/rooms", async (req, res) => {
         {excludeExtraneousValues: true});
     await db.collection("rooms").doc(roomID).set(classToPlain(room));
     res.status(200).send();
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({errMsg: err.message});
+  }
+});
+
+app.post("/users", async (req, res) => {
+  try {
+    const user: UserModel = plainToClass(UserModel, req.body, {excludeExtraneousValues: true});
+    const userID = user.userID;
+
+    const isValidDocID = userID && /^(?!\.\.?$)(?!.*__.*__)([^/]{1,1500})$/.test(userID)
+    if (!isValidDocID) {
+      res.status(400).send("Invalid username string.");
+      return;
+    }
+
+    let userIDQuerySnapShot = await db.collection("users")
+      .where("userID", "==", userID)
+      .get();
+    if (!userIDQuerySnapShot.empty){
+      res.status(409).send("User ID already taken.");
+      return;
+    }
+    await db.collection("users").add(classToPlain(user));
+    res.json({result: `User with ID: ${userID} added.`});
+
   } catch (err) {
     console.log(err);
     res.status(500).send({errMsg: err.message});
